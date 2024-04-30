@@ -21,6 +21,7 @@ let funnelPoints = [
 let funnel = PolygonShape(points: funnelPoints)
 func setup() {
     circle.position = Point(x: 250, y: 400)
+    scene.add(circle)
     circle.hasPhysics = true
     circle.fillColor = .blue
     
