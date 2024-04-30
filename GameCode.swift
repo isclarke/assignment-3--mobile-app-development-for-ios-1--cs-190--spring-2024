@@ -1,6 +1,6 @@
 import Foundation
 
-let circle = OvalShape(width: 40, height: 40)
+let ball = OvalShape(width: 40, height: 40)
 let barrierWidth = 300.0
 let barrierHeight = 25.0
 
@@ -19,21 +19,67 @@ let funnelPoints = [
         Point(x: 20, y: 0)
 ]
 let funnel = PolygonShape(points: funnelPoints)
-func setup() {
-    circle.position = Point(x: 250, y: 400)
-    scene.add(circle)
-    circle.hasPhysics = true
-    circle.fillColor = .blue
+
+let targetPoints = [
+    Point(x: 10, y: 0),
+    Point(x: 0, y: 10),
+    Point(x: 10, y: 20),
+    Point(x: 20, y: 10)
+]
+let target = PolygonShape(points: targetPoints)
+
+func setupTarget() {
+        target.position = Point(x: 200, y: 400)
+        target.hasPhysics = true
+        target.isImmobile = true
+        target.isImpermeable = false
+        target.fillColor = .yellow
     
-    barrier.position = Point(x: 200, y: 150)
-    barrier.isImmobile = true
-    scene.add(barrier)
+        scene.add(target)
+        target.name = "target"
+        target.isDraggable = false
+}
+
+func ballCollided(with otherShape: Shape) {
+    if otherShape.name != "target" {return}
     
+    otherShape.fillColor = .green
+}
+
+func setupBall() {
+    ball.onCollision = ballCollided(with:)
+    ball.isDraggable = false
+}
+
+func setupFunnel() {
     funnel.position = Point(x: 200, y: scene.height - 25)
     scene.add(funnel)
     funnel.onTapped = dropBall
+    funnel.fillColor = .gray
 }
 
+func setup() {
+    ball.position = Point(x: 250, y: 400)
+    scene.add(ball)
+    ball.hasPhysics = true
+    ball.fillColor = .blue
+    
+    barrier.position = Point(x: 200, y: 150)
+    barrier.hasPhysics = true
+    scene.add(barrier)
+    barrier.isImmobile = true
+    barrier.fillColor = .brown
+    
+
+    setupFunnel()
+    setupTarget()
+    setupBall()
+   
+    
+    }
+
 func dropBall() {
-    circle.position = funnel.position
+    ball.position = funnel.position
+    ball.stopAllMotion()
 }
+
